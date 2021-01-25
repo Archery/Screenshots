@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ScreenshotsForCasinos.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ScreenshotsDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">d:\Downloads\</Value>
+    </Setting>
+    <Setting Name="DataDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Data\</Value>
+    </Setting>
+    <Setting Name="CurrentId" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="WorkingDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DBFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Data.litedb</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

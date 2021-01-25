@@ -1,20 +1,30 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
+using Mew.AppLogAndEventHelper;
+using ScreenshotsForCasinos.Properties;
 
 namespace ScreenshotsForCasinos {
-    static class Program {
+    internal static class Program {
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main() {
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+        private static void Main() {
+            AppLogAndEventHelper.Instance.AddLog(Application.ExecutablePath);
+            Settings.Default.WorkingDir = new FileInfo(Application.ExecutablePath).Directory?.FullName;
+            try {
+                Application.SetHighDpiMode(HighDpiMode.SystemAware);
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new FCasinos());
+            }
+            catch (Exception e) {
+                AppLogAndEventHelper.Instance.RaiseError(e);
+            }
+            finally {
+                AppLogAndEventHelper.Instance.Dispose();
+            }
         }
     }
 }
