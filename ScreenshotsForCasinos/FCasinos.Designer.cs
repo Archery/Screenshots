@@ -28,6 +28,7 @@ namespace ScreenshotsForCasinos {
             this.llDomain = new System.Windows.Forms.LinkLabel();
             this.cMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.miTransparent = new System.Windows.Forms.ToolStripMenuItem();
+            this.miReport = new System.Windows.Forms.ToolStripMenuItem();
             this.gbDesktop = new System.Windows.Forms.GroupBox();
             this.bDesktop12 = new System.Windows.Forms.Button();
             this.bDesktop11 = new System.Windows.Forms.Button();
@@ -56,9 +57,11 @@ namespace ScreenshotsForCasinos {
             this.bMobile1 = new System.Windows.Forms.Button();
             this.hScrollBar1 = new System.Windows.Forms.HScrollBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.cMenu.SuspendLayout();
             this.gbDesktop.SuspendLayout();
             this.gbMobile.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // llDomain
@@ -74,19 +77,30 @@ namespace ScreenshotsForCasinos {
             this.llDomain.TabStop = true;
             this.llDomain.Text = "linkLabel1";
             this.llDomain.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.llDomain.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.llDomain_LinkClicked);
             // 
             // cMenu
             // 
             this.cMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.miTransparent});
+            this.miTransparent,
+            this.miReport});
             this.cMenu.Name = "cMenu";
-            this.cMenu.Size = new System.Drawing.Size(181, 26);
+            this.cMenu.ShowCheckMargin = true;
+            this.cMenu.Size = new System.Drawing.Size(158, 48);
             // 
             // miTransparent
             // 
             this.miTransparent.Name = "miTransparent";
-            this.miTransparent.Size = new System.Drawing.Size(180, 22);
-            this.miTransparent.Text = "toolStripMenuItem1";
+            this.miTransparent.Size = new System.Drawing.Size(157, 22);
+            this.miTransparent.Text = "Transparent";
+            this.miTransparent.Click += new System.EventHandler(this.miTransparent_Click);
+            // 
+            // miReport
+            // 
+            this.miReport.Name = "miReport";
+            this.miReport.Size = new System.Drawing.Size(157, 22);
+            this.miReport.Text = "Report";
+            this.miReport.Click += new System.EventHandler(this.miReport_Click);
             // 
             // gbDesktop
             // 
@@ -372,6 +386,10 @@ namespace ScreenshotsForCasinos {
             this.statusStrip1.TabIndex = 8;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
+            // 
             // FCasinos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -385,11 +403,14 @@ namespace ScreenshotsForCasinos {
             this.Controls.Add(this.gbDesktop);
             this.Controls.Add(this.llDomain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.KeyPreview = true;
             this.Name = "FCasinos";
             this.Text = "Casino Screenshots";
+            this.TopMost = true;
             this.cMenu.ResumeLayout(false);
             this.gbDesktop.ResumeLayout(false);
             this.gbMobile.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -428,6 +449,8 @@ namespace ScreenshotsForCasinos {
         private System.Windows.Forms.ContextMenuStrip cMenu;
         private System.Windows.Forms.ToolStripMenuItem miTransparent;
         private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripMenuItem miReport;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }
 

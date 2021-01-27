@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using LiteDB;
 using Mew.AppLogAndEventHelper;
 using Mew.AppLogAndEventHelper.Helpers;
@@ -14,7 +15,7 @@ namespace ScreenshotsForCasinos {
             get => this.currentIndex_ > this.Casinos.Count || this.currentIndex_ < 0 ? null : this.Casinos[this.currentIndex_];
             set {
                 if (!this.Casinos.Contains(value)) return;
-                this.currentIndex_ = value.ID;
+                this.currentIndex_ = int.Parse(value.ID);
             }
         }
         //public Log Output = new Log(Settings.Default.OutFile, ";", true);
@@ -28,7 +29,7 @@ namespace ScreenshotsForCasinos {
             this.WorkingDir = new DirectoryInfo(Settings.Default.WorkingDir);
             this.DataDir = this.WorkingDir.CreateSubdirectory(Settings.Default.DataDir);
             this.ScreenshotsDir = new DirectoryInfo(Settings.Default.ScreenshotsDir);
-            this.ConnectionString = this.WorkingDir.GetFile(Settings.Default.DBFile).FullName;
+            this.ConnectionString = this.WorkingDir.GetFile("\\"+Settings.Default.DBFile).FullName;
         }
 
         public void CreateList() {
@@ -136,39 +137,59 @@ namespace ScreenshotsForCasinos {
             };
 
             var index = 3;
-            for (var i = 0; i <= index; i++)
+            for (var i = 0; i < index; i++)
                 this.Casinos.Add(null);
 
 
             using var db = new LiteDatabase(this.ConnectionString);
             var db_casinos = db.GetCollection<CasinoRecord>("casinos");
+            //if (db_casinos.Count() <= 0 || db_casinos.Exists(c => c.Domain == null))
+            //db_casinos.DeleteAll();
 
+            if (db_casinos.Count() <= 0)
+                foreach (var domain in init) {
+                    var db_casino = db_casinos.FindOne(x => x.ID == index.ToString());
 
-            foreach (var domain in init) {
-                var db_casino = db_casinos.FindById(index);
+                    Casino casino;
+                    //if (db_casino != null && db_casino.Domain == domain) {
+                    //    casino = Casino.FromCasinoRecord(db_casino);
+                    //    AppLogAndEventHelper.Instance.RaiseDebugInfo(db_casino);
+                    //    AppLogAndEventHelper.Instance.RaiseDebugInfo(casino);
+                    //    //casino.LazyInit(this.WorkingDir);
+                    //    this.Casinos.Insert(index, casino);
+                    //    continue;
+                    //}
 
-                Casino casino;
-                if (db_casino != null) {
+                    //db_casino = db_casinos.FindOne(c => c.Domain == domain);
+                    //if (db_casino != null) {
+                    //    AppLogAndEventHelper.Instance.RaiseError("Wrong index", db_casino);
+                    //    continue;
+                    //}
+
+                    casino = new Casino(index, domain);
+                    this.Casinos.Insert(index, casino);
+                    db_casinos.EnsureIndex(x => x.ID, true); // Create unique index in Name field
+                    db_casinos.Insert((CasinoRecord) casino);
+
+                    index++;
+                }
+            else
+                foreach (var db_casino in db_casinos.FindAll().OrderBy(x=>int.Parse(x.ID))) {
+                    //= db_casinos.FindOne(x => x.ID == index.ToString());
+
+                    var casino = Casino.FromCasinoRecord(db_casino);
                     casino = Casino.FromCasinoRecord(db_casino);
                     AppLogAndEventHelper.Instance.RaiseDebugInfo(db_casino);
                     AppLogAndEventHelper.Instance.RaiseDebugInfo(casino);
-                    //casino.LazyInit(this.WorkingDir);
-                    this.Casinos.Insert(index, casino);
-                    continue;
+                    this.Casinos.Insert(int.Parse(casino.ID), casino);
                 }
+        }
 
-                //db_casino = db_casinos.FindOne(c => c.Domain == domain);
-                //if (db_casino != null) {
-                //    AppLogAndEventHelper.Instance.RaiseError("Wrong index", db_casino);
-                //    continue;
-                //}
-
-                casino = new Casino(index, domain);
-                this.Casinos.Insert(index, casino);
-                db_casinos.Insert(index, casino);
-
-                index++;
-            }
+        public void UpdateCurrentCasino() {
+            using var db = new LiteDatabase(this.ConnectionString);
+            var db_casinos = db.GetCollection<CasinoRecord>("casinos");
+            var b= db_casinos.Update((CasinoRecord) this.CurrentCasino);
+            if (!b) AppLogAndEventHelper.Instance.RaiseError($"Can't update {this.CurrentCasino}");
         }
 
         //public CasinoManager(string filename) {
@@ -243,26 +264,26 @@ namespace ScreenshotsForCasinos {
             return true;
         }
 
-        public string ScreenshotPath(string screenshot_type) => 
+        public string ScreenshotPath(string screenshot_type) =>
             this.di_.GetFile($"{this.Domain}_{screenshot_type}.png").FullName;
 
         public static Casino FromCasinoRecord(CasinoRecord cr) =>
-            new Casino(cr.ID, cr.Domain) {
+            new Casino(int.Parse(cr.ID), cr.Domain) {
                 Screenshots = cr.Screenshots,
                 Directory = cr.Directory
             };
     }
 
     public class CasinoRecord {
-        public readonly int ID;
-        public string Domain;
-        public string Directory;
-        public Dictionary<string, string> Screenshots;
+        public string ID { get; set; }
+        public string Domain { get; set; }
+        public string Directory { get; set; }
+        public Dictionary<string, string> Screenshots { get; set; }
 
         public CasinoRecord() { }
 
         public CasinoRecord(int id, string domain) {
-            this.ID = id;
+            this.ID = id.ToString();
             this.Domain = domain;
             this.Screenshots = new Dictionary<string, string>();
         }
