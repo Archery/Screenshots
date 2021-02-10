@@ -8,7 +8,6 @@ D:\Dev\Screenshots\ScreenshotsForCasinos\bin\Debug\netcoreapp3.1\LiteDB.dll
 D:\Dev\Screenshots\ScreenshotsForCasinos\bin\Debug\netcoreapp3.1\AppLogAndEventHelper.dll
 D:\Dev\Screenshots\ScreenshotsForCasinos\bin\Debug\netcoreapp3.1\AppLogAndEventHelper.pdb
 D:\Dev\Screenshots\ScreenshotsForCasinos\bin\Debug\netcoreapp3.1\AppLogAndEventHelper.dll.config
-D:\Dev\Screenshots\ScreenshotsForCasinos\obj\Debug\netcoreapp3.1\ScreenshotsForCasinos.csprojAssemblyReference.cache
 D:\Dev\Screenshots\ScreenshotsForCasinos\obj\Debug\netcoreapp3.1\ScreenshotsForCasinos.FCasinos.resources
 D:\Dev\Screenshots\ScreenshotsForCasinos\obj\Debug\netcoreapp3.1\ScreenshotsForCasinos.csproj.GenerateResource.cache
 D:\Dev\Screenshots\ScreenshotsForCasinos\obj\Debug\netcoreapp3.1\ScreenshotsForCasinos.AssemblyInfoInputs.cache
@@ -18,3 +17,6 @@ D:\Dev\Screenshots\ScreenshotsForCasinos\obj\Debug\netcoreapp3.1\ScreenshotsForC
 D:\Dev\Screenshots\ScreenshotsForCasinos\obj\Debug\netcoreapp3.1\ScreenshotsForCasinos.dll
 D:\Dev\Screenshots\ScreenshotsForCasinos\obj\Debug\netcoreapp3.1\ScreenshotsForCasinos.pdb
 D:\Dev\Screenshots\ScreenshotsForCasinos\obj\Debug\netcoreapp3.1\ScreenshotsForCasinos.genruntimeconfig.cache
+D:\Dev\Screenshots\ScreenshotsForCasinos\obj\Debug\netcoreapp3.1\ScreenshotsForCasinos.csprojAssemblyReference.cache
+D:\Dev\Screenshots\ScreenshotsForCasinos\obj\Debug\netcoreapp3.1\ScreenshotsForCasinos.Properties.Resources.resources
+D:\Dev\Screenshots\ScreenshotsForCasinos\bin\Debug\netcoreapp3.1\Properties\Settings.settings

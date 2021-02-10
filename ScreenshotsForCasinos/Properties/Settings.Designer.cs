@@ -37,7 +37,7 @@ namespace ScreenshotsForCasinos.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\Dev\\Screenshots\\ScreenshotsForCasinos\\bin\\Debug\\netcoreapp3.1\\Data\\")]
         public string DataDir {
             get {
                 return ((string)(this["DataDir"]));
@@ -73,13 +73,13 @@ namespace ScreenshotsForCasinos.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data.litedb")]
-        public string DBFile {
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\rudak\\AppData\\Local\\Mozilla Firefox\\firefox.exe")]
+        public string BrowserPath {
             get {
-                return ((string)(this["DBFile"]));
+                return ((string)(this["BrowserPath"]));
             }
             set {
-                this["DBFile"] = value;
+                this["BrowserPath"] = value;
             }
         }
     }

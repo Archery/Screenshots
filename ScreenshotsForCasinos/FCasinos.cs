@@ -13,13 +13,13 @@ using ScreenshotsForCasinos.Properties;
 namespace ScreenshotsForCasinos {
     public partial class FCasinos : Form {
         private readonly List<Button> buttons_;
-        public CasinoManager casinoManager_;
-
-        private DateTime lastTime_ = DateTime.Now;
         private readonly List<Button> mandatoryDesktopButtons_;
         private readonly List<Button> mandatoryMobileButtons_;
         private readonly List<Button> optionalDesktopButtons_;
         private readonly List<Button> optionalMobileButtons_;
+        public CasinoManager casinoManager_;
+
+        private DateTime lastTime_ = DateTime.Now;
 
         public FCasinos() {
             this.InitializeComponent();
@@ -89,10 +89,10 @@ namespace ScreenshotsForCasinos {
                 this.optionalDesktopButtons_[i].Text = o_names[i];
                 this.optionalMobileButtons_[i].Text = o_names[i];
 
-                this.mandatoryDesktopButtons_[i].Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-                this.mandatoryMobileButtons_[i].Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
-                this.optionalDesktopButtons_[i].Font = new Font("Segoe UI", 9.75F, FontStyle.Italic, GraphicsUnit.Point);
-                this.optionalMobileButtons_[i].Font = new Font("Segoe UI", 9.75F, FontStyle.Italic, GraphicsUnit.Point);
+                this.mandatoryDesktopButtons_[i].Font = new Font("Tahoma", this.Font.Size, FontStyle.Bold, GraphicsUnit.Point);
+                this.mandatoryMobileButtons_[i].Font = new Font("Tahoma", this.Font.Size, FontStyle.Bold, GraphicsUnit.Point);
+                this.optionalDesktopButtons_[i].Font = new Font("Tahoma", this.Font.Size, FontStyle.Italic, GraphicsUnit.Point);
+                this.optionalMobileButtons_[i].Font = new Font("Tahoma", this.Font.Size, FontStyle.Italic, GraphicsUnit.Point);
             }
 
             foreach (var button in this.buttons_) button.Click += this.ButtonClick;
@@ -100,7 +100,13 @@ namespace ScreenshotsForCasinos {
             #endregion
 
             this.casinoManager_ = new CasinoManager();
-            this.casinoManager_.CreateList();
+            this.casinoManager_.DownloadList();
+
+            this.InitScrollBar();
+        }
+
+        private void InitScrollBar() {
+            if (this.casinoManager_.Casinos == null || this.casinoManager_.Casinos.All(c => c == null)) return;
 
             this.hScrollBar1.Minimum = int.Parse(this.casinoManager_.Casinos.First(c => c != null).ID);
             this.hScrollBar1.Maximum = int.Parse(this.casinoManager_.Casinos.Last(c => c != null).ID);
@@ -112,14 +118,19 @@ namespace ScreenshotsForCasinos {
         }
 
         private void LoadCasino(Casino casino) {
-            this.llDomain.Text = $"https://{casino.Domain}";
+            this.llDomain.Text = $"{casino.ID} {casino.Domain}";
+            this.llDomain.LinkVisited = false;
 
             foreach (var button in this.buttons_) {
                 var name = ButtonToSSType(button);
-                if (casino.ScreenshotExists(name))
+                if (casino.ScreenshotExists(name)) {
                     button.BackColor = Color.ForestGreen;
-                else
+                    this.SetButtonImage(button, casino.GetScreenshotPath(name));
+                }
+                else {
                     button.BackColor = Color.RosyBrown;
+                    button.Image = null;
+                }
             }
 
             this.hScrollBar1.Value = int.Parse(casino.ID);
@@ -136,7 +147,7 @@ namespace ScreenshotsForCasinos {
             var ss_type = ButtonToSSType(button);
             var file_path = "";
             try {
-                this.casinoManager_.CurrentCasino.LazyInit(this.casinoManager_.DataDir);
+                this.casinoManager_.CurrentCasino.LazyInit();
 
                 file_path = this.casinoManager_.CurrentCasino.ScreenshotPath(ss_type);
                 this.GetLastFile(this.casinoManager_.ScreenshotsDir, file_path);
@@ -144,10 +155,12 @@ namespace ScreenshotsForCasinos {
                 if (this.casinoManager_.CurrentCasino.AddScreenshot(ss_type, file_path)) {
                     this.casinoManager_.UpdateCurrentCasino();
                     button.BackColor = Color.ForestGreen;
+                    this.SetButtonImage(button, file_path);
                 }
                 else {
                     AppLogAndEventHelper.Instance.RaiseError(button, $"No file {file_path}");
                     button.BackColor = Color.RosyBrown;
+                    button.Image = null;
                 }
             }
             catch (Exception ex) {
@@ -174,13 +187,17 @@ namespace ScreenshotsForCasinos {
         private void llDomain_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             // Specify that the link was visited.
             this.llDomain.LinkVisited = true;
+            var domain = this.casinoManager_.CurrentCasino.Domain;
 
-            // Navigate to a URL.
-            Process.Start("\"C:\\Users\\rudak\\AppData\\Local\\Mozilla Firefox\\firefox.exe\"", this.llDomain.Text);
-        }
+            var commands = new List<string> {
+                $"-new-tab \"https://{domain}\" ",
+                $"-new-tab \"https://www.google.com/search?q=%22{domain}%22+site%3Acasinocity.com\" "
+                //$"-new-tab \"https://duckduckgo.com/?q=(promotions+OR+bonus)+site%3A{domain}\" ",
+                //$"-new-tab \"https://duckduckgo.com/?q=(Payouts+OR+(Withdrawal+time)+OR+(Payout+time))+site%3A{domain}\" "
+            };
 
-        private void miTransparent_Click(object sender, EventArgs e) {
-            this.AllowTransparency = !this.AllowTransparency;
+            foreach (var command in commands)
+                Process.Start(Settings.Default.BrowserPath, command);
         }
 
         private void miReport_Click(object sender, EventArgs e) {
@@ -200,11 +217,62 @@ namespace ScreenshotsForCasinos {
             sb.ToString().WriteToFile2(this.casinoManager_.WorkingDir.GetFile("\\report.csv"));
         }
 
+        private void miNewList_Click(object sender, EventArgs e) {
+            var ofDialogue = new OpenFileDialog();
+            if (ofDialogue.ShowDialog() == DialogResult.Cancel)
+                return;
+
+            var fi = new FileInfo(ofDialogue.FileName);
+            var text = fi.ReadFile();
+            var ss = text.Split(new[] {'\n', '\r'}, StringSplitOptions.RemoveEmptyEntries);
+            this.casinoManager_.CreateNewList(ss);
+
+            this.InitScrollBar();
+        }
+
         private void RecieveError(Event e) {
-            //if (e.Type != EventType.Error) return;
-            //if (e.Comments[0] is Control)
-            //    this.errorProvider1.SetError((Control) e.Comments[0], e.CommentsToString());
-            //else this.errorProvider1.SetError(this.llDomain, e.CommentsToString());
+            if (e.Type != EventType.Error) return;
+
+            this.notifyIcon1.BalloonTipIcon = ToolTipIcon.Error;
+            this.notifyIcon1.BalloonTipText = e.CommentsToString();
+            this.notifyIcon1.BalloonTipTitle = "Error";
+            this.notifyIcon1.ShowBalloonTip(60);
+        }
+
+        private void SetButtonImage(Button button, string image_path) {
+            using var image = Image.FromFile(image_path);
+            var image_sc = ScaleImage(image, button.Width, button.Height);
+            button.Image = image_sc;
+            button.ImageAlign = ContentAlignment.MiddleRight;
+            button.TextAlign = ContentAlignment.MiddleLeft;
+        }
+
+        public static Image ScaleImage(Image image, int max_width, int max_height) {
+            var ratio_x = (double) max_width / image.Width;
+            var ratio_y = (double) max_height / image.Height;
+            var ratio = Math.Min(ratio_x, ratio_y);
+
+            var new_width = (int) (image.Width * ratio);
+            var new_height = (int) (image.Height * ratio);
+
+            var new_image = new Bitmap(new_width, new_height);
+
+            using (var graphics = Graphics.FromImage(new_image)) {
+                graphics.DrawImage(image, 0, 0, new_width, new_height);
+            }
+
+            return new_image;
+        }
+
+        private void micbTransparent_SelectedIndexChanged(object sender, EventArgs e) {
+            var rate = this.micbTransparent.SelectedItem.ToString().Replace("%", "");
+            if (100 == int.Parse(rate)) {
+                this.AllowTransparency = false;
+                return;
+            }
+
+            this.AllowTransparency = true;
+            this.Opacity = int.Parse(rate) / 100.0;
         }
     }
 }
