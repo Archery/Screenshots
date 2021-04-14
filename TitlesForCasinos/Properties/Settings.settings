@@ -1,0 +1,24 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TitlesForCasinos.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ScreenshotsDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">d:\Downloads\</Value>
+    </Setting>
+    <Setting Name="DataDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">d:\Dev\MySiteParser\MySiteParser\MySiteParser\WorkingDir\CasinoSitesTitles\</Value>
+    </Setting>
+    <Setting Name="CurrentId" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="WorkingDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">d:\Dev\MySiteParser\MySiteParser\MySiteParser\WorkingDir\CasinoSitesTitles\</Value>
+    </Setting>
+    <Setting Name="BrowserPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\rudak\AppData\Local\Mozilla Firefox\firefox.exe</Value>
+    </Setting>
+    <Setting Name="DBPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">d:\Dev\MySiteParser\MySiteParser\MySiteParser\WorkingDir\CasinoSitesTitles\CasinoSitesTitles.litedb</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
